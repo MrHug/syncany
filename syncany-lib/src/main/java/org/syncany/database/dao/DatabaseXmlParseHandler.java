@@ -65,6 +65,7 @@ public class DatabaseXmlParseHandler extends DefaultHandler {
 	private VectorClock versionTo;
 	private DatabaseReadType readType;
 	private DatabaseVersionType filterType;
+	private Map<FileHistoryId, FileVersion> ignoredMostRecentFileVersions;
 
 	private String elementPath;
 	private DatabaseVersion databaseVersion;
@@ -83,6 +84,7 @@ public class DatabaseXmlParseHandler extends DefaultHandler {
 		this.versionTo = toVersion;
 		this.readType = readType;
 		this.filterType = filterType;
+		this.ignoredMostRecentFileVersions = ignoredMostRecentFileVersions;
 	}
 
 	@Override
@@ -219,12 +221,32 @@ public class DatabaseXmlParseHandler extends DefaultHandler {
 					fileVersion.setPosixPermissions(posixPermissions);
 				}
 
-				fileHistory.addFileVersion(fileVersion);
-			
+				// File version might be ignored
+				boolean fileVersionIgnored = fileVersionIgnored(fileVersion);
+				
+				if (!fileVersionIgnored) {
+					fileHistory.addFileVersion(fileVersion);
+				}
 			}
 		}
 	}
 
+
+	private boolean fileVersionIgnored(FileVersion fileVersion) {
+		if (ignoredMostRecentFileVersions != null) {
+			FileVersion mostRecentIgnoreFileVersion = ignoredMostRecentFileVersions.get(fileHistory.getFileHistoryId());
+			
+			if (mostRecentIgnoreFileVersion != null) {
+				return fileVersion.getVersion() <= mostRecentIgnoreFileVersion.getVersion();
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {

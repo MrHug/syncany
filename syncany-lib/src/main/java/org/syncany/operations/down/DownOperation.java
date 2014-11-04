@@ -389,8 +389,8 @@ public class DownOperation extends AbstractTransferOperation {
 			}
 			
 			
-			new DatabaseXmlSerializer().save(winnersPurgeDatabase.getDatabaseVersions(), new File("/home/pheckel/Syncany/Issue231-DB6/databases-xml-winner/winner-purged-combined.xml"));
-			new DatabaseXmlSerializer().save(winnersDatabase.getDatabaseVersions(), new File("/home/pheckel/Syncany/Issue231-DB6/databases-xml-winner/winner-combined.xml"));
+	//new DatabaseXmlSerializer().save(winnersPurgeDatabase.getDatabaseVersions(), new File("/home/pheckel/Syncany/Issue231-DB6/databases-xml-winner/winner-2-purged-combined.xml"));
+	//new DatabaseXmlSerializer().save(winnersDatabase.getDatabaseVersions(), new File("/home/pheckel/Syncany/Issue231-DB6/databases-xml-winner/winner-2-combined.xml"));
 			
 			
 			
@@ -526,7 +526,6 @@ public class DownOperation extends AbstractTransferOperation {
 		// Note: This must happen AFTER the file system stuff, because we compare the winners database with the local database!			
 		logger.log(Level.INFO, "- Adding database versions to SQL database ...");
 		int i=10;
-		
 		for (DatabaseVersionHeader currentDatabaseVersionHeader : winnersApplyBranch.getAll()) {
 			if (currentDatabaseVersionHeader.getType() == DatabaseVersionType.DEFAULT) {
 				persistDatabaseVersion(winnersDatabase, currentDatabaseVersionHeader);				
@@ -536,12 +535,15 @@ public class DownOperation extends AbstractTransferOperation {
 			}
 			else {
 				throw new RuntimeException("Unknow database version type: " + currentDatabaseVersionHeader.getType());
-			}
+			}	
 			
-			try { 				
-				i++;
-				Runtime.getRuntime().exec("cp -a /home/pheckel/Syncany/Issue231-DB6/DB6Copy2/.syncany/db /home/pheckel/Syncany/Issue231-DB6/DB6Copy2/.syncany/db_"+i+"_"+currentDatabaseVersionHeader.toString().replace("/", "_")); }
-			catch (Exception e) { e.printStackTrace(); }
+            try {                           
+                   i++;
+                  // Runtime.getRuntime().exec("cp -a /home/pheckel/Syncany/Issue231-DB6/DB6Copy2/.syncany/db /home/pheckel/Syncany/Issue231-DB6/DB6Copy2/.syncany/db_"+i+"_"+currentDatabaseVersionHeader.toString().replace("/", "_"));
+                 }
+
+           catch (Exception e) { e.printStackTrace(); }
+
 		}
 	}
 

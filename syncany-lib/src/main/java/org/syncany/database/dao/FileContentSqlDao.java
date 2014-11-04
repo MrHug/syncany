@@ -81,14 +81,13 @@ public class FileContentSqlDao extends AbstractSqlDao {
 		PreparedStatement preparedStatement = getStatement(connection, "filecontent.insert.all.writeFileContentChunkRefs.sql");
 		int order = 0;
 		
-		for (ChunkChecksum chunkChecksum : fileContent.getChunks()) {
-			
+		for (ChunkChecksum chunkChecksum : fileContent.getChunks()) {			
 			preparedStatement.setString(1, fileContent.getChecksum().toString());
 			preparedStatement.setString(2, chunkChecksum.toString());
 			preparedStatement.setInt(3, order);
 
 			preparedStatement.addBatch();
-			
+			System.out.println("writeFileContentChunkRefs(" + fileContent.getChecksum().toString() + ", "  + chunkChecksum.toString() + ", " + order+")");
 			order++;				
 		}
 		
